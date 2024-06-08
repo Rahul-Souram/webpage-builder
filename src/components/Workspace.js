@@ -1,18 +1,15 @@
 // src/components/Workspace.js
 import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
-import {
-  TextBlock,
-  ImageHolder,
-  ButtonComponent,
-  HeaderComponent,
-  CarouselComponent,
-  CardComponent,
-  VideoEmbed,
-  FormComponent,
-  GridLayout,
-  SocialMediaIcons,
-} from './components';
+import TextBlock from '../components/TextBlock';
+import ImageHolder from '../components/ImageHolder';
+import ButtonComponent from '../components/ButtonComponent';
+import HeaderComponent from '../components/HeaderComponent';
+import CarouselComponent from '../components/CarouselComponent';
+import CardComponent from '../components/CardComponent';
+import VideoEmbed from '../components/VideoEmbed';
+import FormComponent from '../components/FormComponent';
+import GridLayout from '../components/GridLayout';
 
 const COMPONENTS = {
   TextBlock,
@@ -24,27 +21,30 @@ const COMPONENTS = {
   VideoEmbed,
   FormComponent,
   GridLayout,
-  SocialMediaIcons,
 };
 
 const Workspace = () => {
   const [components, setComponents] = useState([]);
-  
-  const [, drop] = useDrop(() => ({
-    accept: 'COMPONENT',
-    drop: (item) => addComponent(item.type),
+
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'component',
+    drop: (item) => addComponentToWorkspace(item),
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
   }));
 
-  const addComponent = (type) => {
-    setComponents([...components, { type, id: components.length }]);
+  const addComponentToWorkspace = (component) => {
+    setComponents((prevComponents) => [...prevComponents, component.type]);
   };
 
   return (
-    <div ref={drop} className="workspace">
-      {components.map((component) => {
-        const Component = COMPONENTS[component.type];
-        return <Component key={component.id} />;
+    <div className="workspace" ref={drop}>
+      {components.map((component, index) => {
+        const Component = COMPONENTS[component];
+        return <Component key={index} />;
       })}
+      {isOver && <div className="drop-indicator">Drop here</div>}
     </div>
   );
 };

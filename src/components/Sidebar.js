@@ -2,35 +2,45 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-const SidebarItem = ({ type, children }) => {
+const COMPONENT_LIST = [
+  { type: 'TextBlock', name: 'Text Block' },
+  { type: 'ImageHolder', name: 'Image Holder' },
+  { type: 'ButtonComponent', name: 'Button' },
+  { type: 'HeaderComponent', name: 'Header' },
+  { type: 'CarouselComponent', name: 'Carousel' },
+  { type: 'CardComponent', name: 'Card' },
+  { type: 'VideoEmbed', name: 'Video Embed' },
+  { type: 'FormComponent', name: 'Form' },
+  { type: 'GridLayout', name: 'Grid Layout' },
+  { type: 'SocialMediaIcons', name: 'Social Media Icons' },
+];
+
+const Sidebar = () => {
+  return (
+    <div className="sidebar">
+      {COMPONENT_LIST.map((component) => (
+        <SidebarItem key={component.type} component={component} />
+      ))}
+    </div>
+  );
+};
+
+const SidebarItem = ({ component }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'COMPONENT',
-    item: { type },
+    type: 'component',
+    item: { type: component.type },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      {children}
-    </div>
-  );
-};
-
-const Sidebar = () => {
-  return (
-    <div className="sidebar">
-      <SidebarItem type="TextBlock">Text Block</SidebarItem>
-      <SidebarItem type="ImageHolder">Image Holder</SidebarItem>
-      <SidebarItem type="ButtonComponent">Button</SidebarItem>
-      <SidebarItem type="HeaderComponent">Header</SidebarItem>
-      <SidebarItem type="CarouselComponent">Carousel</SidebarItem>
-      <SidebarItem type="CardComponent">Card</SidebarItem>
-      <SidebarItem type="VideoEmbed">Video Embed</SidebarItem>
-      <SidebarItem type="FormComponent">Form</SidebarItem>
-      <SidebarItem type="GridLayout">Grid Layout</SidebarItem>
-      <SidebarItem type="SocialMediaIcons">Social Media Icons</SidebarItem>
+    <div
+      ref={drag}
+      className="sidebar-item"
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
+      {component.name}
     </div>
   );
 };
